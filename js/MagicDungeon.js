@@ -618,6 +618,7 @@ class Battle {
 function main() { //メイン関数
     //描画
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.beginPath();
     game.drawMazeField(maze.mazeField);
     game.drawLogField();
     game.drawSubFiled();
