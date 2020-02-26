@@ -198,6 +198,9 @@ class Player extends Character { //操作キャラクター
         super(img, name);
         this.AK = 30;
         this.DF = 30;
+
+        //技
+        this.heal = 10;
     }
 
     moveCharacter() {
@@ -209,11 +212,13 @@ class Player extends Character { //操作キャラクター
             if(input.left === true) {
                     var nextX = x - 1;
                     this.moveDiection  = 'left';
+                    this.img.src = './image/player_left.png';
                     if(maze.mazeField[y][nextX] === 1) {
                         maze.mazeField[y][nextX] = this.charaNum;
                         maze.mazeField[y][x] = 1;
                         this.move = this.moveDistance;
                         input.push = 'left';
+                        if(player.MP < player.maxMP) player.MP += 1;
                         game.counTurn();
                     }
                     if(maze.mazeField[y][nextX] === 2) {
@@ -224,11 +229,13 @@ class Player extends Character { //操作キャラクター
             if(input.up === true) {
                     var nextY = y - 1;
                     this.moveDiection = 'up';
+                    this.img.src = './image/player_back.png';
                     if(maze.mazeField[nextY][x] === 1) {
                         maze.mazeField[nextY][x] = this.charaNum;
                         maze.mazeField[y][x] = 1;
                         this.move = this.moveDistance;
                         input.push = 'up';
+                        if(player.MP < player.maxMP) player.MP += 1;
                         game.counTurn();
                     }
                     if(maze.mazeField[nextY][x] === 2) {
@@ -240,11 +247,13 @@ class Player extends Character { //操作キャラクター
             if(input.right === true) {
                     var nextX = x + 1;
                     this.moveDiection  = 'right';
+                    this.img.src = './image/player_right.png';
                     if(maze.mazeField[y][nextX] === 1) {
                         maze.mazeField[y][nextX] = this.charaNum;
                         maze.mazeField[y][x] = 1;
                         this.move = this.moveDistance;
                         input.push = 'right';
+                        if(player.MP < player.maxMP) player.MP += 1;
                         game.counTurn();
                     }
                     if(maze.mazeField[y][nextX] === 2) {
@@ -255,11 +264,13 @@ class Player extends Character { //操作キャラクター
             if(input.down === true) {
                     var nextY = y + 1;
                     this.moveDiection  = 'down';
+                    this.img.src = './image/player_front.png';
                     if(maze.mazeField[nextY][x] === 1) {
                         maze.mazeField[nextY][x] = this.charaNum;
                         maze.mazeField[y][x] = 1;
                         this.move = this.moveDistance;
                         input.push = 'down';
+                        if(player.MP < player.maxMP) player.MP += 1;
                         game.counTurn();
                     }
                     if(maze.mazeField[nextY][x] === 2) {
@@ -283,6 +294,19 @@ class Player extends Character { //操作キャラクター
             input.enter = false;
             game.checkNeighbour(player, player.moveDiection);
             game.counTurn();
+        }
+    }
+
+    healPlayer() {
+        input.heal_key();
+        if(input.z === true) {
+            input.z === false;
+            if(this.HP < this.maxMP  && this.MP >= this.heal) {
+                this.HP += this.heal;
+                this.MP -= this.heal;
+                log.addLog(this.name + "はHPを" + this.heal + "かいふく！");
+                game.counTurn();
+            } 
         }
     }
 }
@@ -517,6 +541,19 @@ class Input { //キー入力処理
             if(key_code === 13) this.enter = false;
         }, false);
     }
+
+    heal_key() {
+        addEventListener(`keydown`, () => {
+            const key_code = event.keyCode;
+            if(key_code === 90) this.z = true;
+            event.preventDefault();
+        }, false);
+
+        addEventListener(`keyup`, () => {
+            const key_code = event.keyCode;
+            if(key_code === 90) this.z = false;
+        }, false);
+    }
 }
 
 
@@ -592,6 +629,7 @@ function main() { //メイン関数
     game.players.forEach(character => {
         character.moveCharacter();
         character.attack();
+        character.healPlayer();
     });
 
     //enemys
@@ -614,7 +652,7 @@ let charaNum = 100;
 let game = new GameMain(mazeSize * mazeBoxSize, mazeSize * mazeBoxSize);
 let input = new Input();
 
-let player = new Player('./image/hero.jpg', "hibiking");
+let player = new Player('./image/player_front.png', "hibiking");
 game.addPlayers(player);;
 
 game.enemyRandomGenerate();
