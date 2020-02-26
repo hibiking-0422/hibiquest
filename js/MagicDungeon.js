@@ -76,6 +76,11 @@ class Maze { //迷路
     }
 }
 
+var redslm = new Image();
+redslm.src = "./image/redSlime.png";
+var slm = new Image();
+slm.src = "./image/slime.png";
+
 class Character { //キャラクター系のスーパークラス
     constructor(img, name){
         //ステータス
@@ -98,8 +103,7 @@ class Character { //キャラクター系のスーパークラス
         this.initCharaPosition();
         this.moveDiection = "";
         //画像
-        this.img = new Image();
-        this.img.src = img;
+        this.img = img;
         this.width = mazeBoxSize;
         this.height = mazeBoxSize;
     }
@@ -193,6 +197,15 @@ class Character { //キャラクター系のスーパークラス
     }
 } 
 
+var cback = new Image();
+cback.src = './image/player_back.png';
+var cfront = new Image();
+cfront.src = './image/player_front.png';
+var cright = new Image();
+cright.src = './image/player_right.png';
+var cleft = new Image();
+cleft.src = './image/player_left.png';
+
 class Player extends Character { //操作キャラクター
     constructor(img, name) {
         super(img, name);
@@ -212,7 +225,7 @@ class Player extends Character { //操作キャラクター
             if(input.left === true) {
                     var nextX = x - 1;
                     this.moveDiection  = 'left';
-                    this.img.src = './image/player_left.png';
+                    this.img = cleft;
                     if(maze.mazeField[y][nextX] === 1) {
                         maze.mazeField[y][nextX] = this.charaNum;
                         maze.mazeField[y][x] = 1;
@@ -229,7 +242,7 @@ class Player extends Character { //操作キャラクター
             if(input.up === true) {
                     var nextY = y - 1;
                     this.moveDiection = 'up';
-                    this.img.src = './image/player_back.png';
+                    this.img = cback;
                     if(maze.mazeField[nextY][x] === 1) {
                         maze.mazeField[nextY][x] = this.charaNum;
                         maze.mazeField[y][x] = 1;
@@ -247,7 +260,7 @@ class Player extends Character { //操作キャラクター
             if(input.right === true) {
                     var nextX = x + 1;
                     this.moveDiection  = 'right';
-                    this.img.src = './image/player_right.png';
+                    this.img = cright;
                     if(maze.mazeField[y][nextX] === 1) {
                         maze.mazeField[y][nextX] = this.charaNum;
                         maze.mazeField[y][x] = 1;
@@ -264,7 +277,7 @@ class Player extends Character { //操作キャラクター
             if(input.down === true) {
                     var nextY = y + 1;
                     this.moveDiection  = 'down';
-                    this.img.src = './image/player_front.png';
+                    this.img = cfront;
                     if(maze.mazeField[nextY][x] === 1) {
                         maze.mazeField[nextY][x] = this.charaNum;
                         maze.mazeField[y][x] = 1;
@@ -368,16 +381,15 @@ class GameMain { //ゲームのメイン処理
         let enemyImage = "";
         
         for(let i = 0; i < enemyNum; i++) {
+            let enemyName = "enemy" + i;
             switch(Math.floor(Math.random() * 2)) {
                 case 0 :
-                    enemyImage = "./image/redSlime.png"
+                    game.addEnemys(new Enemy(slm, enemyName));
                     break;
                 case 1 :
-                    enemyImage = "./image/slime.png";
+                    game.addEnemys(new Enemy(redslm, enemyName));
                     break;
             }
-            let enemyName = "enemy" + i;
-            game.addEnemys(new Enemy(enemyImage, enemyName));
         }
     }
 
@@ -653,7 +665,7 @@ let charaNum = 100;
 let game = new GameMain(mazeSize * mazeBoxSize, mazeSize * mazeBoxSize);
 let input = new Input();
 
-let player = new Player('./image/player_front.png', "hibiking");
+let player = new Player(cfront, "hibiking");
 game.addPlayers(player);;
 
 game.enemyRandomGenerate();
